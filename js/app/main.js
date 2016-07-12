@@ -1,32 +1,26 @@
-define(['vue', 'app/menu'], function (Vue, Menu) {
-    return new Vue({
+define([
+    'vue',
+    'app/vuex/store',
+    'app/components/menu'
+], function (vue, store, menu) {
+    return new vue({
         
         'el' : '#app',
+
+        'store' : store,
         
-        'data' : {
-            'active' : false,
-            'time' : null
-        },
+        'data' : {},
         
         'components' : {
-            'my-menu' : Menu
+            'my-menu' : menu
         },
-        
-        'methods' : {
-            'start' : function () {
-                this.active = true;
-                console.log('start');
-            },
-            
-            'stop' : function () {
-                this.active = false;
-                console.log('stop');
-            },
-            
-            'reset' : function () {
-                this.active = false;
-                console.log('reset');
-            },
+
+        'ready' : function () {
+            this.$store.watch(function (store) {
+                return store.active;
+            }, function () {
+                console.log('sd');
+            });
         }
     });
 });

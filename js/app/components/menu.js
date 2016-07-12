@@ -1,5 +1,8 @@
-define(['vue', 'app/main/button'], function (Vue, Button) {
-    
+define([
+    'vue',
+    'app/components/button'
+], function (vue, button, actions, getters) {
+
     var template = '' + 
         '<div class="menu" :class="class">' +
             '<my-button text="Start" v-on:click="start" v-if="! active"></my-button>' +
@@ -7,7 +10,7 @@ define(['vue', 'app/main/button'], function (Vue, Button) {
             '<my-button text="Reset" v-on:click="reset" v-if="active"></my-button>' +
         '</div>';
     
-    return Vue.extend({
+    return vue.extend({
         
         'template' : template,
         
@@ -27,25 +30,27 @@ define(['vue', 'app/main/button'], function (Vue, Button) {
         },
         
         'components' : {
-            'my-button' : Button
+            'my-button' : button
         },
-        
+
+        'computed' : {
+            'active' : function () {
+                return this.$store.getters.active;
+            }
+        },
+
         'methods' : {
-            
             'start' : function () {
-                this.$emit('start');
+                this.$store.dispatch('start');
             },
-            
-            
+
             'stop' : function () {
-                this.$emit('stop');
+                this.$store.dispatch('stop');
             },
-            
-            
+
             'reset' : function () {
-                this.$emit('reset');
-            },
-            
-        },
+                this.$store.dispatch('reset');
+            }
+        }
     });
 });
