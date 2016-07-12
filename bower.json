@@ -1,0 +1,29 @@
+{
+  "name": "vuejs-sudoku",
+  "description": "VueJS Sudoku V2",
+  "main": "",
+  "authors": [
+    "Shahbaz Tariq"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "vuejs",
+    "sudoku"
+  ],
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "requirejs": "^2.2.0",
+    "vue": "^1.0.26",
+    "zepto": "^1.1.6",
+    "gsap": "greensock#^1.18.5",
+    "jquery": "^3.1.0",
+    "vuex": "^0.8.2"
+  }
+}

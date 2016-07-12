@@ -1,0 +1,24 @@
+{
+  "name": "vuejs-sudoku",
+  "version": "1.0.0",
+  "description": "VueJS Sudoku V2",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shahbaztariq/vuejs-sudoku.git"
+  },
+  "keywords": [
+    "vuejs",
+    "sudoku"
+  ],
+  "author": "Shahbaz Tariq",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shahbaztariq/vuejs-sudoku/issues"
+  },
+  "homepage": "https://github.com/shahbaztariq/vuejs-sudoku#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-requirejs": "^0.1.3",
+    "gulp-sass": "^2.3.2"
+  }
+}

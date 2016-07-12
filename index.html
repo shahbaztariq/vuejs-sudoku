@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charser="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie-edge">
+        <title>Sudoku</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+        <link rel="stylesheet" media="all" href="dist/styles.css">
+    </head>
+    <body>
+        <div id="app">
+            <my-menu v-on:start="start" v-on:stop="stop" v-on:reset="reset" :active="active"></my-menu>
+            
+            <table class="sudoku-table">
+                <tbody>
+                    <tr v-for="(irow, row) in game">
+                        <td v-for="(icell, cell) in row" :class="['i'+irow, 'j'+icell, cell.editable ? 'editable': 'not-editable', cell.hasConflict ? 'has-conflict' : 'no-conflict']">
+                            <input type="tel" :value="cell.value" :readonly="!cell.editable" :data-i="irow" :data-j="icell" @click="cellClick" @keyup="cellKeyUp" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <script src="bower_components/requirejs/require.js"></script>
+        <script src="dist/app.js"></script>
+    </body>
+</html>
