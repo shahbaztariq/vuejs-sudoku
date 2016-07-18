@@ -1,4 +1,59 @@
- * {
+* {
     margin: 0;
     padding: 0;
- }
+}
+
+html {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.sudoku-table {
+    width: 270px;
+    height: 270px;
+    background: #ccc;
+    list-style: none;
+    
+    li {
+        width: 30px;
+        height: 30px;
+        float: left;
+        
+        input {
+            width: 28px;
+            height: 28px;
+            border: 1px solid #eee;
+            text-align: center;
+            display: none;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 14px;
+        }
+        
+        span {
+            display: block;
+            width: 28px;
+            height: 28px;
+            background: #eee;
+            border: 1px solid #eee;
+            line-height: 30px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        &.editable {
+            input {
+                display: block;
+            }
+            
+            span {
+                display: none;
+            }
+        }
+        
+        &.conflict {
+            input, span {
+                background:#ffcccc;
+                border:1px solid #ffbbbb;
+            }
+        }
+    }
+}
