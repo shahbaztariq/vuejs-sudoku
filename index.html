@@ -5,18 +5,34 @@
         <meta http-equiv="x-ua-compatible" content="ie-edge">
         <title>Sudoku</title>
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-        <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600,700' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Open+Sans:600,800' rel='stylesheet' type='text/css'>
+        <link href='https://fonts.googleapis.com/css?family=Raleway:200' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="http://yui.yahooapis.com/pure/0.6.0/pure-min.css">
         <link rel="stylesheet" media="all" href="dist/styles.css">
     </head>
     <body>
-        <div id="app">
-            <my-menu v-on:start="start" v-on:stop="stop" v-on:reset="reset" :active="active"></my-menu>
+        <div id="app" class="container">
+            <div class="header">
+                <h1>Sudoku</h1>
+                <h2>A Vue.js Impelementation</h2>
+                <h3>By Shahbaz Tariq</h3>
+            </div>
             
-            <ul class="sudoku-table">
-                <template v-for="(index, cell) in cells">
-                    <my-cell :cell="cell"></my-cell>
-                </template>
-            </ul>
+            <div class="pure-g">
+                <div class="pure-u-1-5">
+                    <my-menu v-on:start="start" v-on:stop="stop" v-on:reset="reset" :active="active"></my-menu>
+                </div>
+                <div class="pure-u-3-5">
+                    <ul class="sudoku-table">
+                        <template v-for="(index, cell) in cells">
+                            <my-cell :cell="cell"></my-cell>
+                        </template>
+                    </ul>
+                </div>
+                <div class="pure-u-1-5">
+                    right
+                </div>
+            </div>
         </div>
         
         <script src="bower_components/requirejs/require.js"></script>

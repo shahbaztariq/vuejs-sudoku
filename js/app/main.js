@@ -19,16 +19,30 @@ define([
             'my-menu' : menu,
             'my-cell' : cell
         },
-
+        
+        /**
+         * on ready
+         *
+         * @return {this}
+         */
         'ready' : function () {
             
-            var board = '016002400320009000040103000005000069009050300630000800000306010000400072004900680';
+            var board = '019847325' + 
+                        '842395716' + 
+                        '357216489' + 
+                        '468152937' + 
+                        '235479168' + 
+                        '791683542' + 
+                        '174568293' + 
+                        '583924671' + 
+                        '926731854';
+            
             var cells = [];
             
             for (var i = 0; i < 81; i++) {
                 cells.push({
                     'number'   : parseInt(board[i]),
-                    'guess'    : '',
+                    'guess'    : parseInt(board[i]),
                     'position' : i + 1,
                     'row'      : Math.ceil((i + 1) / 9),
                     'col'      : (i % 9) + 1,
@@ -39,16 +53,18 @@ define([
             
             this.cells = cells;
             
-            /*
-            this.$store.watch(function (store) {
-                return store.active;
-            }, function () {
-                console.log('sd');
-            });
-            */
+            return this;
         },
         
         'methods' : {
+            
+            /**
+             * get row cells
+             *
+             * @param  {int} row
+             *
+             * @return {array}
+             */
             'getRow' : function (row) {
                 var cells = [];
                 
@@ -61,6 +77,13 @@ define([
                 return cells;
             },
             
+            /**
+             * get column cells
+             *
+             * @param  {int} col
+             *
+             * @return {array}
+             */
             'getCol' : function (col) {
                 var cells = [];
                 
@@ -95,16 +118,21 @@ define([
             },
             
             /**
-             * get section (9 x 9 square)
-             *
-             * @param  {string} section
+             * get section keys
              *
              * @return {array}
              */
-            'getSection' : function (section) {
-                var cells = [];
-                
-                var sections = {
+            'getSectionKeys' : function () {
+                return ['tl', 'tc', 'tr', 'cl', 'cc', 'cr', 'bl', 'bc', 'br'];
+            },
+            
+            /**
+             * get section matrix
+             *
+             * @return {Object}
+             */
+            'getSectionMatrix' : function () {
+                return {
                     'tl' : [[1,1], [1,2], [1,3],    [2,1], [2,2], [2,3],    [3,1], [3,2], [3,3]],
                     'tc' : [[1,4], [1,5], [1,6],    [2,4], [2,5], [2,6],    [3,4], [3,5], [3,6]],
                     'tr' : [[1,7], [1,8], [1,9],    [2,7], [2,8], [2,9],    [3,7], [3,8], [3,9]],
@@ -117,11 +145,25 @@ define([
                     'bc' : [[7,4], [7,5], [7,6],    [8,4], [8,5], [8,6],    [9,4], [9,5], [9,6]],
                     'br' : [[7,7], [7,8], [7,9],    [8,7], [8,8], [8,9],    [9,7], [9,8], [9,9]],
                 }
+            },
+            
+            /**
+             * get section (9 x 9 square)
+             *
+             * @param  {string} section
+             *
+             * @return {array}
+             */
+            'getSection' : function (section) {
+                var cells = [];
+                
+                var sections = this.getSectionMatrix();
                 
                 if (typeof sections[section] != 'undefined') {
                     $.each(sections[section], function (index, coord) {
                         var cell = this.getCell(coord[0], coord[1]);
                         if (cell) {
+                            cell.section = section;
                             cells.push(cell);
                         }
                     }.bind(this));
@@ -130,6 +172,96 @@ define([
                 return cells;
             },
             
+            /**
+             * validate
+             *
+             * @return {this}
+             */
+            'validate' : function () {
+                this.clearConflicts();
+                this.validateRows();
+                this.validateColumns();
+                this.validateSections();
+                
+                return this;
+            },
+            
+            /**
+             * has won
+             *
+             * @return {bool}
+             */
+            'hasWon' : function () {
+                
+                if (this.hasConflicts()) {
+                    return false;
+                }
+                
+                for (var i = 1; i <= 9; i++) {
+                    if (! this.isCellsHaveValidSum(this.getRow(i))) {
+                        return false;
+                    }
+                    
+                    if (! this.isCellsHaveValidSum(this.getCol(i)) ) {
+                        return false;
+                    }
+                }
+                
+                var foundInvalidSectionSum = false;
+                
+                $.each(this.getSectionKeys(), function(index, key) {
+                    if (! this.isCellsHaveValidSum(this.getSection(key))) {
+                        foundInvalidSectionSum = true;
+                        return false;
+                    }
+                }.bind(this));
+                
+                if (foundInvalidSectionSum) {
+                    return false;
+                }
+                
+                return true;
+            },
+            
+            'isCellsHaveValidSum' : function (cells) {
+                var sum = 0;
+                
+                $.each(cells, function(index, cell) {
+                    sum += cell.guess;
+                });
+                
+                return sum == 45;
+            },
+            
+            /**
+             * won!
+             *
+             * @return {this}
+             */
+            'won' : function () {
+                alert('won!');
+                
+                return this;
+            },
+            
+            /**
+             * clear conflicts
+             *
+             * @return {this}
+             */
+            'clearConflicts' : function () {
+                $.each(this.cells, function (index, cell) {
+                    cell.conflict = false
+                });
+                
+                return this;
+            },
+            
+            /**
+             * get conflicted cells
+             *
+             * @return {array}
+             */
             'getConflictedCells' : function () {
                 var cells = [];
                 
@@ -142,73 +274,164 @@ define([
                 return cells;
             },
             
-            'clearConflicts' : function () {
-                $.each(this.cells, function (index, cell) {
-                    cell.conflict = false
-                });
+            /**
+             * has conflicted cells
+             *
+             * @return {int}
+             */
+            'hasConflicts' : function () {
+                return this.getConflictedCells().length;
             },
             
-            'validate' : function () {
-                this.clearConflicts();
-                this.validateRows();
-                this.validateColumns();
-                this.validateSections();
-                this.highlight();
-            },
-            
+            /**
+             * validate rows
+             *
+             * @return {this}
+             */
             'validateRows' : function () {
                 for (var i = 1; i <= 9; i++) {
                     this.validateCells(this.getRow(i));
                 }
+                
+                return this;
             },
             
+            /**
+             * validate columns
+             *
+             * @return {this}
+             */
             'validateColumns' : function () {
                 for (var i = 1; i <= 9; i++) {
                     this.validateCells(this.getCol(i));
                 }
+                
+                return this;
             },
             
+            /**
+             * validate sections
+             *
+             * @return {this}
+             */
             'validateSections' : function () {
-                var sections = ['tl', 'tc', 'tr', 'cl', 'cc', 'cr', 'bl', 'bc', 'br'];
                 
-                $.each(sections, function(index, section){
+                $.each(this.getSectionKeys(), function(index, section){
                     this.validateCells(this.getSection(section));
                 }.bind(this));
+                
+                return this;
             },
             
+            /**
+             * validate cells
+             *
+             * @param  {array} cells
+             *
+             * @return {this}
+             */
             'validateCells' : function (cells) {
                 var _cells = {};
                 
                 $.each(cells, function (index, cell) {
                     
-                    var key = 'key_' + cell.number.toString();
+                    var key = 'key_' + cell.guess.toString();
                     
-                    if (cell.number !== 0 && typeof _cells[key] != 'undefined') {
-                        cell.conflict = true
-                        _cells[key].conflict = true;
+                    if (cell.guess !== 0 && typeof _cells[key] != 'undefined') {
+                        this.setConflictedCouple(cell, _cells[key]);
                     }
                     
                     _cells[key] = cell;
                     
                 }.bind(this));
+                
+                return this;
             },
             
-            'highlight' : function () {
+            /**
+             * set conflicted cell couple
+             *
+             * @param  {Object} cellA
+             * @param  {Object} cellB
+             *
+             * @return {this}
+             */
+            'setConflictedCouple' : function (cellA, cellB) {
+                cellA.conflict = true;
+                cellB.conflict = true;
                 
-                this.each(this.getConflictedCells(), function (index, cell) {
-                    
-                    var row = this.getRow(cell.row);
-                    var col = this.getCol(cell.col);
-                    
-                }.bind(this));
+                if (cellA.row == cellB.row) {
+                    this.setConflictedRow(cellA.row);
+                }
                 
+                if (cellA.col == cellB.col) {
+                    this.setConflictedCol(cellA.col);
+                }
+                
+                if (cellA.section == cellB.section) {
+                    this.setConflictedSection(cellA.section);
+                }
+                
+                return this;
+            },
+            
+            /**
+             * set conflicted row
+             *
+             * @param  {int} row
+             *
+             * @return {this}
+             */
+            'setConflictedRow' : function (row) {
+                return this.setConflicted(this.getRow(row));
+            },
+            
+            /**
+             * set conflicted column
+             *
+             * @param  {int} col
+             *
+             * @return {this}
+             */
+            'setConflictedCol' : function (col) {
+                return this.setConflicted(this.getCol(col));
+            },
+            
+            /**
+             * set conflicted section
+             *
+             * @param  {string} section
+             *
+             * @return {this}
+             */
+            'setConflictedSection' : function (section) {
+                return this.setConflicted(this.getSection(section));
+            },
+            
+            /**
+             * set conflicted
+             *
+             * @param  {array} cells
+             *
+             * @return {this}
+             */
+            'setConflicted' : function (cells) {
+                $.each(cells, function (index, cell) {
+                    cell.conflict = true;
+                });
+                
+                return this;
             },
         },
         
         'events' : {
             'guess' : function (number, coord) {
-                this.getCell(coord[0], coord[1]).number = parseInt(number);
+                this.getCell(coord[0], coord[1]).guess = parseInt(number);
                 this.validate();
+                
+                if (this.hasWon()) {
+                    this.won();
+                }
             }
         },
     });
