@@ -1,13 +1,6 @@
-# VueJS Sudoku
+# Sudoku - A Vue.js Implementation
 
-VueJS implementation of Sudoku. [Play][play].
+Heavily inspired by [this][original]
 
-See the [ReactJS version here][reactsudoku].
-
-### Features
-
-- Mobile-friendly
-- Uses [LocalStorage][localstorage] to save the current game state
-
-[play]: https://andreynering.github.io/vuejs-sudoku
-[reactsudoku]: https://github.com/andreynering/sudoku
+[original]: https://github.com/andreynering/vuejs-sudoku
+[play]: https://github.com/andreynering/sudoku
