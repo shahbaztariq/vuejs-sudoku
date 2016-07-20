@@ -1,7 +1,7 @@
 define(['vue'], function (Vue) {
     
     var template = '' + 
-        '<button class="button" :class="class">' +
+        '<button class="pure-button pure-button-primary">' +
             '{{ text }}' +
         '</button>';
     
@@ -14,14 +14,6 @@ define(['vue'], function (Vue) {
                 'type' : String,
                 'required' : true
             }
-        },
-        
-        'data' : function () {
-            return {
-                'class' : {
-                    'active' : true
-                }
-            };
         }
     });
 });

@@ -1,16 +1,14 @@
 define([
     'vue',
     'jquery',
-    'app/vuex/store',
+    'app/boards',
     'app/components/menu',
     'app/components/cell'
-], function (vue, $, store, menu, cell) {
+], function (vue, $, boards, menu, cell) {
     return new vue({
         
         'el' : '#app',
 
-        'store' : store,
-        
         'data' : {
             'cells' : []
         },
@@ -27,36 +25,53 @@ define([
          */
         'ready' : function () {
             
-            var board = '019847325' + 
-                        '842395716' + 
-                        '357216489' + 
-                        '468152937' + 
-                        '235479168' + 
-                        '791683542' + 
-                        '174568293' + 
-                        '583924671' + 
-                        '926731854';
-            
-            var cells = [];
-            
-            for (var i = 0; i < 81; i++) {
-                cells.push({
-                    'number'   : parseInt(board[i]),
-                    'guess'    : parseInt(board[i]),
-                    'position' : i + 1,
-                    'row'      : Math.ceil((i + 1) / 9),
-                    'col'      : (i % 9) + 1,
-                    'conflict' : false,
-                    'section'  : ''
-                });
-            }
-            
-            this.cells = cells;
-            
-            return this;
         },
         
         'methods' : {
+            
+            /**
+             * start
+             *
+             * @param  {string} difficulty
+             *
+             * @return {this}
+             */
+            'start' : function (difficulty) {
+                
+                var board;
+                
+                switch (difficulty) {
+                    case 'easy':
+                        board = boards.easy();
+                    break;
+                    case 'medium':
+                        board = boards.medium();
+                    break;
+                    case 'hard':
+                        board = boards.hard();
+                    break;
+                    default:
+                        board = boards.any();
+                }
+                
+                var cells = [];
+                
+                for (var i = 0; i < 81; i++) {
+                    cells.push({
+                        'number'   : parseInt(board[i]),
+                        'guess'    : parseInt(board[i]),
+                        'position' : i + 1,
+                        'row'      : Math.ceil((i + 1) / 9),
+                        'col'      : (i % 9) + 1,
+                        'conflict' : false,
+                        'section'  : ''
+                    });
+                }
+                
+                this.cells = cells;
+                
+                return this;
+            },
             
             /**
              * get row cells
@@ -432,6 +447,22 @@ define([
                 if (this.hasWon()) {
                     this.won();
                 }
+            },
+            
+            'start_easy' : function () {
+                this.start('easy');
+            },
+            
+            'start_medium' : function () {
+                this.start('medium');
+            },
+            
+            'start_hard' : function () {
+                this.start('hard');
+            },
+            
+            'start_any' : function () {
+                this.start('any');
             }
         },
     });

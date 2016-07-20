@@ -1,56 +1,60 @@
 define([
     'vue',
     'app/components/button'
-], function (vue, button, actions, getters) {
+], function (vue, button) {
 
     var template = '' + 
-        '<div class="menu" :class="class">' +
-            '<my-button text="Start" v-on:click="start" v-if="! active"></my-button>' +
-            '<my-button text="Stop" v-on:click="stop" v-if="active"></my-button>' +
-            '<my-button text="Reset" v-on:click="reset" v-if="active"></my-button>' +
-        '</div>';
+        '<ul class="menu" :class="class">' +
+            '<li><my-button text="Easy"   v-on:click="easy"  ></my-button></li>' +
+            '<li><my-button text="Medium" v-on:click="medium"></my-button></li>' +
+            '<li><my-button text="Hard"   v-on:click="hard"  ></my-button></li>' +
+            '<li><my-button text="Any"    v-on:click="any"   ></my-button></li>' +
+        '</ul>';
     
     return vue.extend({
         
         'template' : template,
         
-        'props' : {
-            'active' : {
-                'type' : Boolean,
-                'required' : true
-            }
-        },
-        
-        'data' : function () {
-            return {
-                'class' : {
-                    'active' : true
-                }
-            };
-        },
-        
         'components' : {
             'my-button' : button
         },
-
-        'computed' : {
-            'active' : function () {
-                return this.$store.getters.active;
-            }
-        },
-
+        
         'methods' : {
-            'start' : function () {
-                this.$store.dispatch('start');
+            /**
+             * easy
+             *
+             * @return {void}
+             */
+            'easy' : function () {
+                this.$dispatch('start_easy');
             },
-
-            'stop' : function () {
-                this.$store.dispatch('stop');
+            
+            /**
+             * medium
+             *
+             * @return {void}
+             */
+            'medium' : function () {
+                this.$dispatch('start_medium');
             },
-
-            'reset' : function () {
-                this.$store.dispatch('reset');
-            }
+            
+            /**
+             * hard
+             *
+             * @return {void}
+             */
+            'hard' : function () {
+                this.$dispatch('start_hard');
+            },
+            
+            /**
+             * any
+             *
+             * @return {void}
+             */
+            'any' : function () {
+                this.$dispatch('start_any');
+            },
         }
     });
 });

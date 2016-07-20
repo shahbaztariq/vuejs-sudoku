@@ -20,7 +20,7 @@
             
             <div class="pure-g">
                 <div class="pure-u-1-5">
-                    <my-menu v-on:start="start" v-on:stop="stop" v-on:reset="reset" :active="active"></my-menu>
+                    <my-menu></my-menu>
                 </div>
                 <div class="pure-u-3-5">
                     <ul class="sudoku-table">
@@ -28,9 +28,6 @@
                             <my-cell :cell="cell"></my-cell>
                         </template>
                     </ul>
-                </div>
-                <div class="pure-u-1-5">
-                    right
                 </div>
             </div>
         </div>

@@ -34,10 +34,7 @@ gulp.task('js', function () {
         'paths'   : {
             'app'       : 'app',
             'vue'       : '../bower_components/vue/dist/vue.min',
-            'vuex'      : '../bower_components/vuex/dist/vuex.min',
-            'jquery'    : '../bower_components/jquery/dist/jquery.min',
-            'tweenlite' : '../bower_components/gsap/minified/TweenLite.min',
-            'tweenmax'  : '../bower_components/gsap/minified/TweenMax.min',
+            'jquery'    : '../bower_components/jquery/dist/jquery.min'
         }  
     };
     

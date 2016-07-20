@@ -20,8 +20,7 @@
   ],
   "dependencies": {
     "requirejs": "2.2.0",
-    "vue": "1.0.26",
-    "gsap": "greensock#1.18.5",
-    "vuex": "2.0.0-rc.3"
+    "jquery": "^3.1.0",
+    "vue": "1.0.26"
   }
 }
