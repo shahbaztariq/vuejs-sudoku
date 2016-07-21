@@ -158,3 +158,14 @@ html {
         }
     }
 }
+
+.container.won {
+    .sudoku-table {
+        li {
+            input, span {
+                border-color:green;
+                background-color:#ddffdd;
+            }
+        }
+    }
+}

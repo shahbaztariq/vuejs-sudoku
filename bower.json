@@ -1,26 +1,25 @@
 {
-  "name": "vuejs-sudoku",
-  "description": "VueJS Sudoku V2",
-  "main": "",
-  "authors": [
-    "Shahbaz Tariq"
-  ],
-  "license": "MIT",
-  "keywords": [
-    "vuejs",
-    "sudoku"
-  ],
-  "homepage": "",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "test",
-    "tests"
-  ],
-  "dependencies": {
-    "requirejs": "2.2.0",
-    "jquery": "^3.1.0",
-    "vue": "1.0.26"
-  }
+    "name": "vuejs-sudoku",
+    "description": "VueJS Sudoku V2",
+    "main": "",
+    "authors": [
+        "Shahbaz Tariq"
+    ],
+    "license": "MIT",
+    "keywords": [
+        "vuejs",
+        "sudoku"
+    ],
+    "homepage": "",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "test",
+        "tests"
+    ],
+    "dependencies": {
+        "jquery": "^3.1.0",
+        "vue": "1.0.26"
+    }
 }

@@ -1,4 +1,6 @@
-define(['vue'], function (Vue) {
+define([
+    'vue'
+], function (Vue) {
     
     var template = '' + 
         '<button class="pure-button pure-button-primary">' +
@@ -7,8 +9,14 @@ define(['vue'], function (Vue) {
     
     return Vue.extend({
         
+        /**
+         * template
+         */
         'template' : template,
         
+        /**
+         * props
+         */
         'props' : {
             'text' : {
                 'type' : String,

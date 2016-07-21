@@ -1,4 +1,6 @@
-define(['vue'], function (Vue) {
+define([
+    'vue'
+], function (Vue) {
     
     var template = '' + 
         '<li class="cell" :class="class">' +
@@ -8,20 +10,32 @@ define(['vue'], function (Vue) {
     
     return Vue.extend({
         
+        /**
+         * template
+         */
         'template' : template,
         
+        /**
+         * props
+         */
         'props' : {
             'cell' : {
                 'type' : Object
             }
         },
         
+        /**
+         * data
+         */
         'data' : function () {
             return {
                 'guess' : ''
             };
         },
         
+        /**
+         * computed
+         */
         'computed' : {
             
             /**
@@ -69,6 +83,9 @@ define(['vue'], function (Vue) {
             },
         },
         
+        /**
+         * methods
+         */
         'methods' : {
             
             /**

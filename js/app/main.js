@@ -1,18 +1,29 @@
 define([
     'vue',
     'jquery',
+    'app/cache',
     'app/boards',
     'app/components/menu',
     'app/components/cell'
-], function (vue, $, boards, menu, cell) {
-    return new vue({
+], function (Vue, $, cache, boards, menu, cell) {
+    return new Vue({
         
+        /**
+         * root el id
+         */
         'el' : '#app',
-
+        
+        /**
+         * data
+         */
         'data' : {
-            'cells' : []
+            'cells' : [],
+            'won'   : false
         },
         
+        /**
+         * components
+         */
         'components' : {
             'my-menu' : menu,
             'my-cell' : cell
@@ -24,9 +35,27 @@ define([
          * @return {this}
          */
         'ready' : function () {
-            
+            this.start();
         },
         
+        /**
+         * computed properties
+         */
+        'computed' : {
+            'class' : function () {
+                var c = [];
+                
+                if (this.won) {
+                    c.push('won');
+                }
+                
+                return c.join(' ');
+            },
+        },
+        
+        /**
+         * methods
+         */
         'methods' : {
             
             /**
@@ -74,6 +103,31 @@ define([
             },
             
             /**
+             * congratulate
+             *
+             * @return {this}
+             */
+            'congratulate' : function () {
+                
+                this.won = true;
+                
+                
+                return this;
+            },
+            
+            /**
+             * reset game
+             *
+             * @return {this}
+             */
+            'reset' : function () {
+                cache.clear();
+                this.won = false;
+                
+                return this;
+            },
+            
+            /**
              * get row cells
              *
              * @param  {int} row
@@ -81,6 +135,13 @@ define([
              * @return {array}
              */
             'getRow' : function (row) {
+                
+                var key = 'row_' + row.toString();
+                
+                if (cache.has(key)) {
+                    return cache.get(key);
+                }
+                
                 var cells = [];
                 
                 $.each(this.cells, function (index, cell) {
@@ -88,6 +149,8 @@ define([
                         cells.push(cell);
                     }
                 });
+                
+                cache.set(key, cells);
                 
                 return cells;
             },
@@ -100,6 +163,13 @@ define([
              * @return {array}
              */
             'getCol' : function (col) {
+                
+                var key = 'col_' + col.toString();
+                
+                if (cache.has(key)) {
+                    return cache.get(key);
+                }
+                
                 var cells = [];
                 
                 $.each(this.cells, function (index, cell) {
@@ -107,6 +177,8 @@ define([
                         cells.push(cell);
                     }
                 });
+                
+                cache.set(key, cells);
                 
                 return cells;
             },
@@ -120,6 +192,13 @@ define([
              * @return {Object}
              */
             'getCell' : function (row, col) {
+                
+                var key = 'row_' + row.toString() + 'col_' + col.toString();
+                
+                if (cache.has(key)) {
+                    return cache.get(key);
+                }
+                
                 var found = false;
                 
                 $.each(this.cells, function (index, cell) {
@@ -128,6 +207,8 @@ define([
                         return false;
                     }
                 });
+                
+                cache.set(key, found);
                 
                 return found;
             },
@@ -170,6 +251,13 @@ define([
              * @return {array}
              */
             'getSection' : function (section) {
+                
+                var key = 'section_' + section.toString();
+                
+                if (cache.has(key)) {
+                    return cache.get(key);
+                }
+                
                 var cells = [];
                 
                 var sections = this.getSectionMatrix();
@@ -184,6 +272,8 @@ define([
                     }.bind(this));
                 }
                 
+                cache.set(key, cells)
+                
                 return cells;
             },
             
@@ -197,7 +287,6 @@ define([
                 this.validateRows();
                 this.validateColumns();
                 this.validateSections();
-                
                 return this;
             },
             
@@ -246,17 +335,6 @@ define([
                 });
                 
                 return sum == 45;
-            },
-            
-            /**
-             * won!
-             *
-             * @return {this}
-             */
-            'won' : function () {
-                alert('won!');
-                
-                return this;
             },
             
             /**
@@ -437,6 +515,106 @@ define([
                 
                 return this;
             },
+            
+            /**
+             * solve
+             *
+             * @param  {int} r
+             * @param  {int} c
+             *
+             * @return {[type]} [description]
+             */
+            'solve' : function (r, c) {
+                
+                var row = r || 0;
+                var col = c || 0;
+                
+                var cell = this.getNextEmptyCell(row, col);
+                
+                if (cell === false) {
+                    return true;
+                }
+                
+                var values = this.getPossibleValuesForCell(cell);
+                
+                var solved = false;
+                
+                if (values.length) {
+                    $.each(values, function (index, value) {
+                        
+                        cell.number = value;
+                        cell.guess = value;
+                        
+                        this.validate();
+                        
+                        if (! this.hasConflicts()) {
+                            if (this.solve(row, col)) {
+                                solved = true;
+                                return false;
+                            }
+                        }
+                        
+                        cell.number = 0;
+                        cell.guess = 0;
+                        
+                    }.bind(this));
+                }
+                
+                return solved;
+            },
+            
+            /**
+             * get next empty cell
+             *
+             * @return {object}
+             */
+            'getNextEmptyCell' : function (row, col) {
+                
+                var emptyCell = this.getCell(row, col);
+                
+                if (emptyCell !== false && emptyCell.guess === 0) {
+                    return emptyCell;
+                }
+                
+                $.each(this.cells, function (index, cell) {
+                    if (cell.guess == 0) {
+                        emptyCell = cell;
+                        return false;
+                    }
+                });
+                
+                return emptyCell;
+            },
+            
+            /**
+             * get poss numbers for cell
+             *
+             * @param  {object} cell
+             *
+             * @return {array}
+             */
+            'getPossibleValuesForCell' : function (cell) {
+                var possNumbers = [];
+                var usedNumbers = '';
+                
+                var f = function (index, cell) {
+                    if (usedNumbers.indexOf(cell.guess.toString()) === -1) {
+                        usedNumbers += cell.guess.toString();
+                    }
+                };
+                
+                $.each(this.getRow(cell.row), f);
+                $.each(this.getCol(cell.col), f);
+                $.each(this.getSection(cell.section), f);
+                
+                for (var i = 1; i <= 9; ++i) {
+                    if (usedNumbers.indexOf(i.toString()) === -1) {
+                        possNumbers.push(i);
+                    }
+                }
+                
+                return possNumbers;
+            },
         },
         
         'events' : {
@@ -445,25 +623,37 @@ define([
                 this.validate();
                 
                 if (this.hasWon()) {
-                    this.won();
+                    this.congratulate();
                 }
             },
             
             'start_easy' : function () {
+                this.reset();
                 this.start('easy');
             },
             
             'start_medium' : function () {
+                this.reset();
                 this.start('medium');
             },
             
             'start_hard' : function () {
+                this.reset();
                 this.start('hard');
             },
             
             'start_any' : function () {
+                this.reset();
                 this.start('any');
-            }
+            },
+            
+            'solve' : function () {
+                if (this.solve() && this.hasWon()) {
+                    this.congratulate();
+                } else {
+                    alert('It seem\'s that this puzzle cannot be solved? Well, at least I tried.');
+                }
+            },
         },
     });
 });
